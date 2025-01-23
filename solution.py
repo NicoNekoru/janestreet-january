@@ -14,11 +14,33 @@ row_min = 12345678  # Min row value
 df = [1, 3, 4, 6, 7, 8, 9]   # Degrees of freedom -- numbers which can be excluded
 sudoku_dim = 9  # No magic numbers or something
 
-def build_sudoku_rec(rows, current_board):
+def check_rows_valid(current_board):
+    board_matrix = np.array(current_board)
+    unique_columns = np.unique(board_matrix, axis=1)
+    return unique_columns.shape[1] == board_matrix.shape[1]
+
+def build_boards_rec(rows, current_board):
     # With current board, filter out remaining rows 
     # Check each column have 9 unique elements
     # Pick one row and recurse
-    current_board
+    if not check_rows_valid(current_board):
+        return []
+    
+    if len(current_board) == 9:
+        print(current_board)
+        return [current_board]
+    
+    valid_boards = []
+    for rowi in range(len(rows)):
+        potential_board = current_board + [rows[rowi]]
+        if not check_rows_valid(potential_board):
+            rows.remove(rowi)
+            continue
+        
+        found_boards = build_boards_rec(rows, potential_board)
+        valid_boards.extend(found_boards)
+    
+    return valid_boards
 
 
 for gcd in range(gcd_0, 0, -1): # Iterate through all possible GCDs starting at initial
@@ -36,6 +58,7 @@ for gcd in range(gcd_0, 0, -1): # Iterate through all possible GCDs starting at 
 
         rows_first.append(row_digits)   # Add output of initial ceave
     
+    label = False # Python has no loop labels
     for elim in df: # Go through each possible eliminated digit (df)
         rows_filtered = []
         for row in rows_first: # Search for current 
@@ -46,4 +69,11 @@ for gcd in range(gcd_0, 0, -1): # Iterate through all possible GCDs starting at 
             continue
 
         # Begin test sudoku board construction
-        
+        # boards_pot = build_sudoku_rec(np.array(rows_filtered), [])
+        boards_pot = build_boards_rec(np.array(rows_filtered), [])
+        if len(boards_pot) > 0:
+            print(boards_pot)
+            label = True
+            break
+    if label:
+        break

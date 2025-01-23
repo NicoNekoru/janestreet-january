@@ -10,8 +10,8 @@ initial_gcd = 4005 # Initial GCD
 progress = 1 # Progress check
 
 # Start with GCD -- high -> low
-for gcd in np.arange(initial_gcd, 117, -9): 
-	if gcd % 2  == 0 or gcd % 5 == 0: 	# GCD cannot have 2 or 5 as factor
+for gcd in np.arange(initial_gcd, 27, -18): 
+	if gcd % 5 == 0: 	# GCD cannot have 5 as factor
 		continue
 	if gcd / initial_gcd < progress:
 		print(f'{initial_gcd - gcd}/{initial_gcd}')
